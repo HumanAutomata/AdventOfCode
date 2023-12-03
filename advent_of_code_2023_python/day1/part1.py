@@ -1,13 +1,13 @@
-# read file input 
+# read file input
 file = open('sample1.txt', 'r')
-#file = open('input1.txt', 'r')
+# file = open('input1.txt', 'r')
 lines = file.read().splitlines()
 
-#sum total
+# sum total
 total = 0
 
 for line in lines:
-    digits = "" 
+    digits = ""
     for char in line:
         if char.isnumeric():
             digits += char
@@ -15,8 +15,5 @@ for line in lines:
     line_total = digits[0] + digits[-1]
     total += int(line_total)
 
-#print out total
+# print out total
 print(total)
-
-
-
