@@ -4,25 +4,16 @@
 file = open('input1.txt', 'r')
 lines = file.read().splitlines()
 
-gear_locations = []
 star_locations = []
-total_ratios = []
+ratios = []
 
-# create an empty schematic
+# find the star locations
 rows = cols = len(lines)
-schematic = [["." for j in range(cols)] for i in range(rows)]
 
-# create a 2d array copy of lines
-# and find the star locations
-schematic = [["." for j in range(cols)] for i in range(rows)]
-for row in range(0, rows):
-    for col in range(0, cols):
-        if lines[row][col].isdigit():
-            schematic[row][col] = lines[row][col]
+for row in range(rows):
+    for col in range(cols):
         if lines[row][col] == '*':
-            schematic[row][col] = '*'
             star_locations.append((row, col))
-
 
 # Define the dictionary of moves
 moves = {
@@ -37,62 +28,48 @@ moves = {
 }
 
 
-# return true if a '*' is a gear
-def print_schematic():
-    for row in range(rows):
-        for col in range(cols):
-            print(schematic[row][col], end=' ')
-        print(end='\n')
-
-
-def is_gear_new(row, col):
-    numbers_found = 0
-    numbers = []
+def find_ratios(row, col):
+    # This needs to be a list because otherwise we overcount
+    # it works because all the numbers in the input are unique
+    # If we don't want to use sets, we can edit the string
+    # and write over the numbers we already found,
+    # similar to how I was doing before
+    numbers = set()
 
     for move, (row_offset, col_offset) in moves.items():
         new_row, new_col = row + row_offset, col + col_offset
 
-        if schematic[new_row][new_col].isdigit():
+        if lines[new_row][new_col].isdigit():
             # we found a digit for the number
-            start = schematic[new_row][new_col]
-            # we will delete digits as we go to avoid overcounting
-            schematic[new_row][new_col] = 'x'
+            start = lines[new_row][new_col]
 
             # find all the digits to the left
             index = 1
-            while 0 <= new_col - index and schematic[new_row][new_col - index].isdigit():
+            while 0 <= new_col - index and lines[new_row][new_col - index].isdigit():
                 # append at the front
-                start = schematic[new_row][new_col - index] + start
-                schematic[new_row][new_col - index] = 'x'
+                start = lines[new_row][new_col - index] + start
                 index += 1
 
             # find all the digits to the right
             index = 1
-            while new_col + index < cols and schematic[new_row][new_col + index].isdigit():
+            while new_col + index < cols and lines[new_row][new_col + index].isdigit():
                 # append at the end
-                start = start + schematic[new_row][new_col + index]
-                schematic[new_row][new_col + index] = 'x'
+                start = start + lines[new_row][new_col + index]
                 index += 1
 
             # we found a number
-            numbers_found += 1
-            numbers.append(start)
+            numbers.add(int(start))
 
-    if numbers_found == 2:
-        ratio = int(numbers[0]) * int(numbers[1])
-        total_ratios.append(ratio)
-        return True
-    else:
-        return False
+    if len(numbers) == 2:
+        list_nums = list(numbers)
+        ratio = list_nums[0] * list_nums[1]
+        ratios.append(ratio)
 
 
-def find_gears():
-    for star in star_locations:
-        row = star[0]
-        col = star[1]
-        is_gear_new(row, col)
+# find the sum of the ratios
+for star in star_locations:
+    row = star[0]
+    col = star[1]
+    find_ratios(row, col)
 
-
-# find the sum of ratios
-find_gears()
-print("Total:", sum(total_ratios))
+print("Total:", sum(ratios))
