@@ -29,7 +29,7 @@ valid_sequences = ["MSAMS", "MMASS", "SMASM", "SSAMM"]
 for i in range(0 + 3, WIDTH + 3):
     for j in range(0 + 3, len(board) - 3):
 
-        if board[i][j] == "M" or board[i][j]:
+        if board[i][j] == "M" or board[i][j] == "S":
             top_left = board[i][j]
             top_right = board[i][j + 2]
             center = board[i + 1][j + 1]
