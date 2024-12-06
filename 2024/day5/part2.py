@@ -71,15 +71,10 @@ with open(file) as f:
             continue
 
         pages = [int(x) for x in line.split(",")]
-
         valid = test_validity(pages)
 
         if not valid:
-            print("invaild pages", pages)
-
             fixed_pages = fix_order(pages)
-            print("fixed pages", fixed_pages)
-            print()
             sum += fixed_pages[len(fixed_pages) // 2]
 
 
