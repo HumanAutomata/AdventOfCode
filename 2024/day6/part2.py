@@ -1,13 +1,27 @@
-# row, col and x,y are backwards
-# so I'm just gonna just stick with row, col
+"""
+the smart way to do this is to place the new obsticle so that it forms a rectacle with 3 existing ones
 
+for example:
+.#....
+.....#
+.^....
+O.....
+....#.
+
+but I have a dinner to go to, so maybe we just try every single placement. It can't be that slow, right? RIGHT?
+
+well, 1m52. It's so dumb, but it works!
+
+"""
+
+import copy  # cause curr_board = board doesn't work :(
 
 file = "./input1.txt"
 
 # 10, 130
-padding_width = 10
+width = 130
 
-pad = ["$" for _ in range(10 + 2)]
+pad = ["$" for _ in range(width + 2)]
 
 board = [pad]
 
@@ -44,38 +58,67 @@ RIGHT = (0, 1)
 moves = [UP, RIGHT, DOWN, LEFT]
 
 
-def move(pos, direction):
+def move(pos, direction, board):
 
     move = moves[direction]
     next_pos = (pos[0] + move[0], pos[1] + move[1])
 
-    if board[next_pos[0]][next_pos[1]] == "#":
+    # if you hit an obsticle
+    if board[next_pos[0]][next_pos[1]] in "#O":
+
+        # turn
         direction = (direction + 1) % 4
+
         return pos, direction
 
     return next_pos, direction
 
 
-def patrol(start_row, start_col):
+def patrol(start_row, start_col, board):
 
     pos = (start_row, start_col)
     direction = 0
-    found = {pos}
+    found = [pos]
 
     while board[pos[0]][pos[1]] != "$":
         # mark the cell as found
-        found.add(pos)
-        # board[pos[0]][pos[1]] = "X"
-
-        # print('pos', pos)
-        # for row in board:
-        #     print(row)
-
+        found.append(pos)
+        board[pos[0]][pos[1]] = "X"
 
         # do the next move
-        pos, direction = move(pos, direction)
+        pos, direction = move(pos, direction, board)
 
-    print(len(found))
+        # if this is really dumb
+        if len(found) > width * len(board):
+            return 1
+
+    return 0
 
 
-patrol(start_row, start_col)
+def find_loops(start_row, start_col, board):
+
+    positions = 0
+
+    for i in range(1, width + 1):
+        for j in range(1, len(board)):
+
+            # only test available spots
+            if board[i][j] != ".":
+                continue
+
+            # reset board
+            curr_board = copy.deepcopy(board)
+
+            # try adding an obsticle
+            curr_board[i][j] = "O"
+
+            loop = patrol(start_row, start_col, curr_board)
+
+            if loop:
+                # print("pos", i, j)
+                positions += 1
+
+    return positions
+
+
+print(find_loops(start_row, start_col, board))
