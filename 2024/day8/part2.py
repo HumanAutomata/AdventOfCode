@@ -1,13 +1,3 @@
-"""
-[x] read in all the input
-[x] create a dictionary to hold all the positions each antenna is located at
-[x] for each type of antenna, create all possible pairs
-[x] iterate through all possible pairs and calculate their line (slope)
-[x] try to place a # at the two locations (antenna +/- slope)
-6. if not out of bounds, add the location to a set
-7. print len of set
-"""
-
 import itertools
 
 file = "./input.txt"
