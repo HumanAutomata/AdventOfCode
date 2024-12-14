@@ -12,7 +12,6 @@ with open(file) as f:
 # maybe this time recursion won't cause me pain
 def trailhead_score(row, col, height, found):
     if height == 9:
-        # print("reached 9")
         found.add((row, col))
 
     # up, right, down, left
@@ -30,19 +29,10 @@ def trailhead_score(row, col, height, found):
             and board[new_row][new_col] == height + 1
         ):
 
-            # print("direction", direction)
-            # print(new_row, new_col)
             found = trailhead_score(new_row, new_col, height + 1, found)
-            # print("trying")
-            # print(new_row, new_col, height + 1, found)
 
     return found
 
-
-# for i in range(len(board)):
-#     for j in range(len(board[i])):
-#         print(board[i][j], end=" ")
-#     print()
 
 for i in range(len(board)):
     for j in range(len(board[i])):
@@ -51,8 +41,6 @@ for i in range(len(board)):
             continue
 
         score = len(trailhead_score(i, j, 0, set()))
-        # print("found", found)
-        # print("score", score)
         scores += score
 
 
